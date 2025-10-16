@@ -8,6 +8,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 0
+    path: Assets/Samples/XR Interaction Toolkit/3.0.8/Hands Interaction Demo/HandsDemoScene.unity
+    guid: 3ff35cecbcc52cc42945cf531638a60a
+  - enabled: 0
+    path: Assets/Samples/XR Hands/1.5.1/HandVisualizer/HandVisualizer.unity
+    guid: ab7acf0d9677fbe4db51bc36647d4fcb
+  - enabled: 0
+    path: Assets/Samples/XR Hands/1.5.1/Gestures/HandGestures.unity
+    guid: cd792f2302b8b6f4c9f264e2a4503e15
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 316de7de088e6e343a7e08e3816f1d27, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 525b62b84763ab3458ff36de224239a6, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 78a44be6dd89035469bd46c528bfc8e2, type: 2}
   m_UseUCBPForAssetBundles: 0
