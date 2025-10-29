@@ -11,12 +11,12 @@ public class RaycastManager : MonoBehaviour
     [SerializeField] private AnchorManager _anchorManager;
     [SerializeField] private GameObject _creatingObject;
     private List<ARRaycastHit> hits = new List<ARRaycastHit>();
-    public async Task ShootRayAsync(Transform startPoint)
+    public void ShootRay(Transform startPoint)
     {
         Ray ray = new Ray(startPoint.position, startPoint.forward);
         if (_raycastManager.Raycast(ray, hits, TrackableType.AllTypes))
         {
-            await _anchorManager.CreateAnchoredObject(_creatingObject, hits[0]);
+            _ = _anchorManager.CreateAnchoredObject(_creatingObject, hits[0]);
         }
     }
 }

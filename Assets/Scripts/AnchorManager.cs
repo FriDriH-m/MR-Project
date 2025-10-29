@@ -23,12 +23,18 @@ public class AnchorManager : MonoBehaviour
     }
     public async Task<GameObject> CreateAnchoredObject(GameObject obj, ARRaycastHit hit)
     {
-        var plane = hit.trackable as ARPlane;
-        if (plane != null)
+        try
         {
-            return CreateAnchoredObjectOnPlane(plane, obj, hit.pose);
+            if (hit.trackable is ARPlane plane)
+                return CreateAnchoredObjectOnPlane(plane, obj, hit.pose);
+
+            return await CreateAnchoredObjectAsync(obj, hit);
         }
-        return await CreateAnchoredObjectAsync(obj, hit);
+        catch (System.Exception ex)
+        {
+            Debug.LogException(ex);
+            return null;
+        }
     }
     private async Task<GameObject> CreateAnchoredObjectAsync(GameObject obj, ARRaycastHit hit)
     {
