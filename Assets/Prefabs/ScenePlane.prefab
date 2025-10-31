@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8546619995044853368}
   - component: {fileID: 1997799846035856337}
   - component: {fileID: 2373516038963125203}
+  - component: {fileID: 1699537203394869973}
   m_Layer: 0
   m_Name: ScenePlane
   m_TagString: Untagged
@@ -51,7 +52,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7742165204388308454}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -139,3 +140,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_TrackingStateVisibilityThreshold: 1
   m_HideSubsumed: 1
+--- !u!114 &1699537203394869973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7742165204388308454}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 414d6df5556c4f6e81ee8a67c1a8ae40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
