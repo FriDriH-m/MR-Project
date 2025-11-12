@@ -23,15 +23,47 @@ public class AnchorManager : MonoBehaviour
         while (plane.subsumedBy != null) { plane = plane.subsumedBy; hops++; }
         if (hops > 0) Debug.Log($"[Anchor] Plane was subsumed, hops={hops}, newId={plane.trackableId}");
 
-        Debug.Log($"[Anchor] AttachAnchor at pose pos={hit.pose.position}, rotEuler={hit.pose.rotation.eulerAngles}");
-        var anchor = _anchorManager.AttachAnchor(plane, hit.pose);
+        // ѕытаемс€ прив€затьс€ к плоскости
+        Debug.Log($"[Anchor] Attach at pose pos={hit.pose.position}, rotEuler={hit.pose.rotation.eulerAngles}");
+
+        ARAnchor anchor = null;
+
+#if UNITY_XR_ARFOUNDATION_5_0_OR_NEWER
+        if (!_anchorManager.TryAttachAnchor(plane, hit.pose, out anchor))
+        {
+            Debug.LogWarning("[Anchor] TryAttachAnchor returned FALSE Ч делаем свободный anchor");
+        }
+#else
+        anchor = _anchorManager.AttachAnchor(plane, hit.pose);
         if (anchor == null)
         {
-            Debug.LogWarning("[Anchor] AttachAnchor returned NULL (плохой трекинг/невалидна€ поза/plane)");
-            return null;
+            Debug.LogWarning("[Anchor] AttachAnchor returned NULL Ч делаем свободный anchor");
+        }
+#endif
+
+        // ‘ќЋЅЁ : свободный €корь (без прив€зки к плоскости)
+        if (anchor == null)
+        {
+#if UNITY_XR_ARFOUNDATION_5_0_OR_NEWER
+            if (!_anchorManager.TryAddAnchor(hit.pose, out anchor))
+            {
+                Debug.LogWarning("[Anchor] TryAddAnchor (loose) тоже не создал €корь");
+                return null;
+            }
+#else
+            var loose = new GameObject("LooseAnchor");
+            loose.transform.SetPositionAndRotation(hit.pose.position, hit.pose.rotation);
+            anchor = loose.AddComponent<ARAnchor>(); // менеджер подхватит компонент и создаст XR-anchor
+            if (anchor == null)
+            {
+                Debug.LogWarning("[Anchor] Ќе удалось добавить компонент ARAnchor на свободный объект");
+                Destroy(loose);
+                return null;
+            }
+#endif
         }
 
-        Debug.Log($"[Anchor] Anchor OK: go='{anchor.gameObject.name}'");
+        Debug.Log($"[Anchor] Anchor OK: go='{anchor.gameObject.name}' (parent for spawned prefab)");
         var go = Instantiate(prefab, hit.pose.position, hit.pose.rotation, anchor.transform);
         if (go == null)
         {

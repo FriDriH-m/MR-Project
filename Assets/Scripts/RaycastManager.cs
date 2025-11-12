@@ -41,8 +41,33 @@ public class RaycastManager : MonoBehaviour
         }
         else
         {
+            
             int planes = _planeManager ? _planeManager.trackables.count : -1;
-            Debug.Log($"[Raycast] No plane hit. planesTracked={planes}, mask=AllTypes");
+            Debug.Log($"[Raycast] No plane hit. planesTracked={planes}, mask=PlaneWithinPolygon");
         }
+    }
+    public void ShootRayWithoutAnchor(Transform startPoint)
+    {
+        _hits.Clear();
+        var ray = new Ray(startPoint.position, startPoint.forward);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 50f))
+        {
+            Instantiate(_creatingObject, hit.point, Quaternion.identity);
+            if (hit.collider.gameObject.TryGetComponent<Enemy>(out var enemy))
+            {
+                enemy.TakeDamage(5);
+            }
+        }
+
+        //if (_raycastManager.Raycast(ray, _hits, TrackableType.PlaneWithinPolygon))
+        //{
+        //    var h = _hits[0];
+        //    Instantiate(_creatingObject, h.pose.position, Quaternion.identity);
+        //}
+    }
+
+    private void Update()
+    {
     }
 }
