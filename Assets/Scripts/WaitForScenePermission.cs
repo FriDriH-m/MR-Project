@@ -10,7 +10,7 @@ public class WaitForScenePermission : MonoBehaviour
 {
     const string PermissionId = "com.oculus.permission.USE_SCENE";
     [SerializeField] ARBoundingBoxManager boundingBoxManager;
-    [SerializeField] NavMeshSurface _navMeshSurface;
+    
 
     private void Awake()
     {
@@ -37,7 +37,7 @@ public class WaitForScenePermission : MonoBehaviour
     {
         Debug.Log("USE_SCENE granted.");
         if (boundingBoxManager) boundingBoxManager.enabled = true;
-        _navMeshSurface.BuildNavMesh();
+        
     }
 
     void OnDenied(string _)

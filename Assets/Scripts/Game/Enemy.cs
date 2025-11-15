@@ -50,7 +50,7 @@ public class Enemy : MonoBehaviour
     private void Update()
     {
         _agent.destination = _target.position;
-        if (Vector3.Distance(_target.position, transform.position) < 1f)
+        if (Vector3.Distance(_target.position, transform.position) < 1.5f)
         {
             _agent.speed = 0;
             _animator.SetFloat("Speed", 0f);

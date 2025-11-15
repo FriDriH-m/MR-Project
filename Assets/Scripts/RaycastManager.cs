@@ -59,12 +59,11 @@ public class RaycastManager : MonoBehaviour
                 enemy.TakeDamage(5);
             }
         }
-
-        //if (_raycastManager.Raycast(ray, _hits, TrackableType.PlaneWithinPolygon))
-        //{
-        //    var h = _hits[0];
-        //    Instantiate(_creatingObject, h.pose.position, Quaternion.identity);
-        //}
+        else if (_raycastManager.Raycast(ray, _hits, TrackableType.PlaneWithinPolygon))
+        {
+            var h = _hits[0];
+            Instantiate(_creatingObject, h.pose.position, Quaternion.identity);
+        }
     }
 
     private void Update()

@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
 using Unity.VisualScripting;
@@ -14,19 +15,29 @@ public interface IState
 
 public class FirstState : IState
 {
+    private bool _spawned = false;
     public void Current(MatchManager manager)
     {
+        if (!_spawned) return;
         if (manager.CheckToResults()) manager.SwitchState();
     }
 
     public void Start(MatchManager manager)
     {
-        manager.SpawnEnemies(3);
+        manager.StartCoroutine(Spawning(manager));  
     }
 
     public void Stop(MatchManager manager)
     {
         manager.ClearList();
+    }
+    private IEnumerator Spawning(MatchManager manager)
+    {
+        yield return new WaitForSeconds(1.5f);
+        manager._navMeshSurface.BuildNavMesh();
+        yield return new WaitForSeconds(3f);
+        manager.SpawnEnemies(2);
+        _spawned = true;    
     }
 }
 public class SecondState : IState
@@ -37,7 +48,7 @@ public class SecondState : IState
     }
     public void Start(MatchManager manager)
     {
-        manager.SpawnEnemies(5);
+        manager.SpawnEnemies(3);
     }
     public void Stop(MatchManager manager)
     {
@@ -52,7 +63,7 @@ public class ThirdState : IState
     }
     public void Start(MatchManager manager)
     {
-        manager.SpawnEnemies(7);
+        manager.SpawnEnemies(4);
     }
     public void Stop(MatchManager manager)
     {
@@ -66,23 +77,37 @@ public class MatchManager : MonoBehaviour
     [SerializeField] private Transform _centerObject;
     [SerializeField] private float _spawnRadius = 10f;
     [SerializeField] private GameObject _winCanvas;
+    [SerializeField] public NavMeshSurface _navMeshSurface;
     private List<Enemy> _enemies;
     private List<IState> _states;
-    private int _currentState = 0;
+    private int _currentState = -1;
     private IState _firstState = new FirstState();
     private IState _secondState = new SecondState();    
     private IState _thirdState = new ThirdState();
 
-    private void Start()
+    public void Restart()
     {
+        foreach(var enemy in _enemies)
+        {
+            Destroy(enemy.gameObject);
+        }
+        ClearList();
+        _currentState = -1;
+        Init();
+    }
+
+    private void Update()
+    {
+        if (_currentState == -1) return;
+        _states[_currentState].Current(this);
+    }
+    public void Init()
+    {
+        _currentState = 0;
         _enemies = new List<Enemy>();
         _states = new List<IState> { _firstState, _secondState, _thirdState };
         _states[_currentState].Start(this);
-    }
-    private void Update()
-    {
-        Debug.Log(_currentState + " " + _states.Count);
-        _states[_currentState].Current(this);
+        
     }
 
     private void RemoveEnemyFromList(Enemy enemy)
@@ -114,12 +139,14 @@ public class MatchManager : MonoBehaviour
         {
             GameObject enemy = Instantiate(_enemyPrefab, Vector3.zero, Quaternion.identity);
             Enemy enemyComponent = enemy.GetComponent<Enemy>();
+
             _enemies.Add(enemyComponent);
             enemyComponent.SetTarget(_centerObject);
             enemyComponent.IsDead += RemoveEnemyFromList;
+
             Vector3 spawnPos = GetSpawnPosition();
             NavMesh.SamplePosition(spawnPos, out var hit, 50f, NavMesh.AllAreas);
-            enemy.transform.position = hit.position;
+            enemy.transform.position = hit.position - new Vector3(0, 1, 0);
         }
     }
 
@@ -132,6 +159,8 @@ public class MatchManager : MonoBehaviour
         dir2D.Normalize();
 
         Vector3 offset = new Vector3(dir2D.x, 0f, dir2D.y) * distance;
-        return _centerObject.position + offset;
+        Vector3 a = _centerObject.position;
+        a.y = 0;
+        return a + offset;
     }
 }
